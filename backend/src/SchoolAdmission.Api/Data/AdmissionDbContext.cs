@@ -57,7 +57,9 @@ public sealed class AdmissionDbContext(DbContextOptions<AdmissionDbContext> opti
                 .HasColumnType("timestamp with time zone")
                 .IsRequired();
 
-            entity.HasIndex(hold => new { hold.AdmissionClassId, hold.StudentRegistrationId });
+            entity.HasIndex(hold => new { hold.AdmissionClassId, hold.StudentRegistrationId })
+                .IsUnique()
+                .HasFilter("\"Status\" IN ('HELD', 'CONFIRMED')");
             entity.HasIndex(hold => new { hold.AdmissionClassId, hold.Status });
         });
     }

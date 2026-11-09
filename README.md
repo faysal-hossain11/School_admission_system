@@ -6,9 +6,10 @@ included in this repository.
 
 ## Current status
 
-Stage 3 is complete: the backend includes PostgreSQL persistence and the class
-creation and class-summary APIs. Hold lifecycle APIs, application services,
-student workflows, and UI features have not yet been implemented.
+Stage 4 is complete: the backend includes PostgreSQL persistence, class
+management APIs, and the admission hold lifecycle. Frontend features and the
+assignment-required backend business-rule and concurrency tests are scheduled
+for later stages.
 
 ## Repository layout
 
@@ -22,6 +23,8 @@ backend/
         Migrations/
       Models/
       Repositories/
+      Services/
+      Workers/
   tests/
     SchoolAdmission.Api.Tests/
 frontend/
@@ -61,6 +64,24 @@ The backend exposes these endpoints:
 The class response fields are `id`, `name`, and `totalSeats`. Summary responses
 also include `heldSeats`, `confirmedSeats`, and `availableSeats`. Seat counts
 are calculated from persisted holds; no separate counters are stored.
+
+## Hold APIs and lifecycle
+
+- `POST /classes/{classId}/holds` requires `X-Student-Id` and returns `201` or
+  `409` when the class is full or the student already has an active or
+  confirmed application.
+- `GET /holds/{holdId}` returns one application or `404`.
+- `POST /holds/{holdId}/confirm` requires `X-Student-Id` and confirms the
+  owner's unexpired hold; repeated owner confirmation is idempotent.
+- `DELETE /holds/{holdId}` requires `X-Student-Id` and cancels the owner's
+  active hold with `204`.
+- `GET /me/holds` requires `X-Student-Id` and returns that student's
+  applications.
+
+Set `HOLD_DURATION_SECONDS` to configure the hold duration; it defaults to
+`600`. A hosted background worker expires due holds in PostgreSQL. Capacity
+changes use transactions and lock the class row, and a partial unique index
+prevents more than one `HELD` or `CONFIRMED` application per student and class.
 
 ## Backend database setup
 

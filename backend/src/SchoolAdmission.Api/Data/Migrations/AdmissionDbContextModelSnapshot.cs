@@ -17,7 +17,7 @@ namespace SchoolAdmission.Api.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.22")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -69,7 +69,9 @@ namespace SchoolAdmission.Api.Data.Migrations
 
                     b.HasIndex("AdmissionClassId", "Status");
 
-                    b.HasIndex("AdmissionClassId", "StudentRegistrationId");
+                    b.HasIndex("AdmissionClassId", "StudentRegistrationId")
+                        .IsUnique()
+                        .HasFilter("\"Status\" IN ('HELD', 'CONFIRMED')");
 
                     b.ToTable("AdmissionHolds", null, t =>
                         {

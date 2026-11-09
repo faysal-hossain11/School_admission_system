@@ -1,7 +1,7 @@
 # AI usage
 
-The repository scaffold, persistence model, class API, and related
-documentation were prepared with an AI assistant using Copilot SDK in VS Code.
+The repository scaffold, persistence model, APIs, and related documentation
+were prepared with an AI assistant using Copilot SDK in VS Code.
 
 ## Usage
 
@@ -12,6 +12,14 @@ documentation were prepared with an AI assistant using Copilot SDK in VS Code.
   First migration, and database setup instructions.
 - Added the three class endpoints, request/response DTOs, a class repository,
   and HTTP contract tests using an isolated in-memory test database.
+- Added the hold lifecycle APIs and service, PostgreSQL row-locking
+  transactions, a hosted expiration worker, the active-application unique
+  index and migration, and hold API documentation.
+- Ran PostgreSQL-backed HTTP checks for all five hold endpoints, response
+  fields and statuses, validation, duplicate prevention, ownership,
+  confirmation idempotency, cancellation, expiry, seat release, expiry after
+  restart, and concurrent requests against a limited class capacity. Also
+  checked confirmed-duplicate and expired/cancelled transition rejection.
 
 ## Corrections and verification
 
@@ -24,8 +32,8 @@ documentation were prepared with an AI assistant using Copilot SDK in VS Code.
   authentication. No database changes were applied. Migration generation and
   SQL-script generation succeeded; the model snapshot was separately verified
   to have no pending changes.
-- The backend build completed with no warnings or errors. No application
-  hold workflows or UI behavior have been generated in this stage.
+- The Stage 3 backend build completed with no warnings or errors. At that
+  stage, hold workflows and UI behavior had not yet been implemented.
 - Initial API-test attempts exposed two test setup issues: the test host needed
   the required connection-string environment variable before application
   startup, and each factory needed to reuse one in-memory database across
@@ -33,6 +41,16 @@ documentation were prepared with an AI assistant using Copilot SDK in VS Code.
 - Package compatibility warnings showed the Npgsql EF Core 8 provider and the
   EF Core design package were on different patch versions. EF Core packages
   and the repository-local EF tool were aligned to version 8.0.11.
-- The backend and API tests were verified without PostgreSQL credentials.
-  PostgreSQL migration SQL generation was checked, but no live database schema
-  application or PostgreSQL-backed endpoint test was performed.
+- Initial Stage 4 builds caught invalid generic usage for value types in the
+  result wrapper and DI registration; these were corrected before verification.
+- An initial PostgreSQL HTTP verification attempt used a port already occupied
+  locally. Verification was run on an available port without changing the
+  configured application port. The first restart-check harness also omitted
+  the URL environment variable on its restarted process; the harness was
+  corrected and the restart-expiration check then passed.
+- The Stage 3 API regression suite passed (4 tests). A shared process held the
+  default backend output files, so the final solution build and regression
+  tests were run using a temporary output directory.
+- The Stage 4 migration was applied to the configured PostgreSQL database.
+  PostgreSQL-backed API and concurrency verification was performed; no
+  Stage 5 automated business-rule test suite has been added or run.
