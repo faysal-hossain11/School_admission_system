@@ -18,10 +18,22 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton(
     new AdmissionHoldOptions(ParseHoldDuration(builder.Configuration["HOLD_DURATION_SECONDS"])));
 builder.Services.AddHostedService<AdmissionHoldExpirationWorker>();
+builder.Services.AddCors(options =>
+    options.AddPolicy(
+        "LocalFrontend",
+        policy => policy
+            .WithOrigins(
+                "http://localhost:5173",
+                "http://127.0.0.1:5173",
+                "http://localhost:4173",
+                "http://127.0.0.1:4173")
+            .AllowAnyHeader()
+            .AllowAnyMethod()));
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
+app.UseCors("LocalFrontend");
 app.MapControllers();
 
 app.Run();

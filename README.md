@@ -6,11 +6,10 @@ included in this repository.
 
 ## Current status
 
-Stage 4 is complete: the backend includes PostgreSQL persistence, class
-management APIs, and the admission hold lifecycle. Stage 5 adds automated
-backend tests for the hold lifecycle, ownership, duplicate prevention, and
-concurrent seat allocation. Frontend features remain scheduled for later
-stages.
+Stages 1-6 are complete: the backend includes PostgreSQL persistence, class
+management APIs, and the admission hold lifecycle, with automated lifecycle
+and concurrency tests. The React frontend supports class management and
+student application workflows.
 
 ## Repository layout
 
@@ -115,16 +114,27 @@ and concurrency tests use the configured PostgreSQL database and remove the
 unique test classes they create. Configure the backend connection string to
 point to a test database before running the full suite.
 
-## Frontend scaffold
+## Frontend
 
-The frontend scaffold can be built with Node.js installed:
+With the backend running at `http://localhost:8080`, start the frontend in
+development mode:
 
 ```text
 cd frontend
 npm install
+npm run dev
+```
+
+The browser sends API requests directly to `http://localhost:8080`. The
+backend allows requests from the default Vite development and preview origins.
+Build the static frontend bundle with:
+
+```text
 npm run build
 ```
 
-Frontend features are not implemented yet. Docker Compose run instructions
-will be documented as those capabilities are implemented.
+The student registration number is stored in this browser's local storage.
+Class seat summaries and student applications refresh every five seconds;
+hold countdowns update each second. Docker Compose run instructions will be
+documented as those capabilities are implemented.
 # School_admission_system

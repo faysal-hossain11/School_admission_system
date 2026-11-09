@@ -18,6 +18,11 @@ were prepared with an AI assistant using Copilot SDK in VS Code.
 - Added PostgreSQL-backed xUnit integration tests for automatic expiry,
   confirmation ownership and idempotency, duplicate prevention, and the seat
   invariant under 16 simultaneous requests.
+- Built the React interface for student identity, class administration,
+  seat summaries, student applications, simulated payment, cancellation,
+  countdowns, automatic refresh, and user-facing API errors. Added narrowly
+  scoped CORS for local Vite development and preview origins so the browser can
+  call the required API origin directly.
 - Ran PostgreSQL-backed HTTP checks for all five hold endpoints, response
   fields and statuses, validation, duplicate prevention, ownership,
   confirmation idempotency, cancellation, expiry, seat release, expiry after
@@ -64,3 +69,11 @@ were prepared with an AI assistant using Copilot SDK in VS Code.
   against the configured database. The committed test uses 16 simultaneous
   requests for a four-seat class; the full backend suite passed all seven
   tests, including the concurrency invariant check.
+- The frontend production build passed. Browser checks against the PostgreSQL
+  API covered class creation, hold creation, cancellation, confirmation,
+  persisted student identity after reload, live seat/application refresh,
+  and expiry status with payment disabled.
+- Local port 8080 was occupied by an unrelated Apache process during browser
+  checks, so the API was temporarily run on port 8081 and browser requests
+  were routed to that instance. Temporary API verification classes and holds
+  were used; no confidential assignment file was included.
