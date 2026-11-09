@@ -55,3 +55,4 @@ npm run build
 These commands validate only the project scaffolds; there are no application
 features or tests at this stage. Docker Compose run instructions and test
 commands will be documented as those capabilities are implemented.
+# School_admission_system
