@@ -255,6 +255,11 @@ export default function App() {
           <span className="brand-mark" aria-hidden="true">SA</span>
           <span>School Admissions</span>
         </a>
+        <nav className="topnav" aria-label="Main navigation">
+          <a href="#classes">Classes</a>
+          <a href="#applications">My applications</a>
+          <a href="#school-admin">For schools</a>
+        </nav>
         <div className="identity-control">
           <label htmlFor="student-id">Student registration number</label>
           <input
@@ -385,7 +390,7 @@ export default function App() {
         </div>
       </section>
 
-      <section className="applications-section">
+      <section className="applications-section" id="applications">
         <div className="section-heading">
           <div>
             <p className="eyebrow">YOUR ADMISSION JOURNEY</p>
@@ -506,7 +511,7 @@ export default function App() {
         )}
       </section>
 
-      <section className="admin-section">
+      <section className="admin-section" id="school-admin">
         <div className="admin-intro">
           <p className="eyebrow">SCHOOL ADMIN</p>
           <h2>Set up a new class</h2>
