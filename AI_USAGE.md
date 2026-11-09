@@ -15,6 +15,9 @@ were prepared with an AI assistant using Copilot SDK in VS Code.
 - Added the hold lifecycle APIs and service, PostgreSQL row-locking
   transactions, a hosted expiration worker, the active-application unique
   index and migration, and hold API documentation.
+- Added PostgreSQL-backed xUnit integration tests for automatic expiry,
+  confirmation ownership and idempotency, duplicate prevention, and the seat
+  invariant under 16 simultaneous requests.
 - Ran PostgreSQL-backed HTTP checks for all five hold endpoints, response
   fields and statuses, validation, duplicate prevention, ownership,
   confirmation idempotency, cancellation, expiry, seat release, expiry after
@@ -52,5 +55,12 @@ were prepared with an AI assistant using Copilot SDK in VS Code.
   default backend output files, so the final solution build and regression
   tests were run using a temporary output directory.
 - The Stage 4 migration was applied to the configured PostgreSQL database.
-  PostgreSQL-backed API and concurrency verification was performed; no
-  Stage 5 automated business-rule test suite has been added or run.
+  PostgreSQL-backed API and concurrency verification was performed before
+  Stage 5.
+- The first Stage 5 build attempt was blocked by a running API process locking
+  the normal output. Tests were run successfully with a temporary output
+  directory without stopping that process.
+- PostgreSQL timed out some requests during exploratory 24- and 48-way runs
+  against the configured database. The committed test uses 16 simultaneous
+  requests for a four-seat class; the full backend suite passed all seven
+  tests, including the concurrency invariant check.

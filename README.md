@@ -7,9 +7,10 @@ included in this repository.
 ## Current status
 
 Stage 4 is complete: the backend includes PostgreSQL persistence, class
-management APIs, and the admission hold lifecycle. Frontend features and the
-assignment-required backend business-rule and concurrency tests are scheduled
-for later stages.
+management APIs, and the admission hold lifecycle. Stage 5 adds automated
+backend tests for the hold lifecycle, ownership, duplicate prevention, and
+concurrent seat allocation. Frontend features remain scheduled for later
+stages.
 
 ## Repository layout
 
@@ -109,6 +110,11 @@ Run the backend tests from the repository root:
 dotnet test backend/SchoolAdmission.sln
 ```
 
+The class API contract tests use an isolated in-memory database. Hold lifecycle
+and concurrency tests use the configured PostgreSQL database and remove the
+unique test classes they create. Configure the backend connection string to
+point to a test database before running the full suite.
+
 ## Frontend scaffold
 
 The frontend scaffold can be built with Node.js installed:
@@ -119,6 +125,6 @@ npm install
 npm run build
 ```
 
-Hold workflows and frontend features are not implemented yet. Docker Compose
-run instructions will be documented as those capabilities are implemented.
+Frontend features are not implemented yet. Docker Compose run instructions
+will be documented as those capabilities are implemented.
 # School_admission_system

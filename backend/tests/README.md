@@ -6,7 +6,9 @@ Run the backend tests from the repository root:
 dotnet test backend/SchoolAdmission.sln
 ```
 
-The class API contract tests use an isolated EF Core in-memory database and
-exercise the HTTP endpoints without requiring PostgreSQL credentials. The
-assignment-required backend business-rule and concurrency tests remain
-scheduled for Stage 5.
+The class API contract tests use an isolated EF Core in-memory database.
+Hold lifecycle and concurrency tests exercise the HTTP endpoints against the
+configured PostgreSQL database, including the row-locking seat allocation
+path. Configure `ConnectionStrings__AdmissionDatabase` to use a test database
+before running the full suite. The PostgreSQL tests create uniquely named
+classes and remove their hold and class records when each test finishes.

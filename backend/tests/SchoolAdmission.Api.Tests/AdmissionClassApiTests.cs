@@ -13,6 +13,7 @@ using Xunit;
 
 namespace SchoolAdmission.Api.Tests;
 
+[Collection("Admission API tests")]
 public sealed class AdmissionClassApiTests
 {
     [Fact]
@@ -112,6 +113,8 @@ public sealed class AdmissionClassApiTests
     private sealed class AdmissionApiFactory : WebApplicationFactory<Program>
     {
         private readonly string _databaseName = Guid.NewGuid().ToString();
+        private readonly string? _originalConnectionString =
+            Environment.GetEnvironmentVariable("ConnectionStrings__AdmissionDatabase");
 
         public AdmissionApiFactory()
         {
@@ -122,6 +125,10 @@ public sealed class AdmissionClassApiTests
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            Environment.SetEnvironmentVariable(
+                "ConnectionStrings__AdmissionDatabase",
+                _originalConnectionString);
+
             builder.ConfigureAppConfiguration((_, configuration) =>
                 configuration.AddInMemoryCollection(new Dictionary<string, string?>
                 {
