@@ -26,12 +26,23 @@ builder.Services.AddCors(options =>
                 "http://localhost:5173",
                 "http://127.0.0.1:5173",
                 "http://localhost:4173",
-                "http://127.0.0.1:4173")
+                "http://127.0.0.1:4173",
+                "http://localhost:3000",
+                "http://127.0.0.1:3000")
             .AllowAnyHeader()
             .AllowAnyMethod()));
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AdmissionDbContext>();
+    if (dbContext.Database.IsRelational())
+    {
+        await dbContext.Database.MigrateAsync();
+    }
+}
 
 app.UseCors("LocalFrontend");
 app.MapControllers();

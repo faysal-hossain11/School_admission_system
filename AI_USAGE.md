@@ -21,8 +21,11 @@ were prepared with an AI assistant using Copilot SDK in VS Code.
 - Built the React interface for student identity, class administration,
   seat summaries, student applications, simulated payment, cancellation,
   countdowns, automatic refresh, and user-facing API errors. Added narrowly
-  scoped CORS for local Vite development and preview origins so the browser can
-  call the required API origin directly.
+  scoped CORS for local Vite development, preview, and Compose origins so the
+  browser can call the required API origin directly.
+- Added production multi-stage Dockerfiles, a root Compose stack for
+  PostgreSQL/API/frontend, persistent PostgreSQL volume wiring, startup
+  migration application, and deployment instructions.
 - Ran PostgreSQL-backed HTTP checks for all five hold endpoints, response
   fields and statuses, validation, duplicate prevention, ownership,
   confirmation idempotency, cancellation, expiry, seat release, expiry after
@@ -77,3 +80,13 @@ were prepared with an AI assistant using Copilot SDK in VS Code.
   checks, so the API was temporarily run on port 8081 and browser requests
   were routed to that instance. Temporary API verification classes and holds
   were used; no confidential assignment file was included.
+- A `dotnet run` attempt later failed to copy the API executable because a
+  separate process held the default output file open. The process owner
+  denied termination from this session. Building to a temporary output
+  directory and starting that build on a free port succeeded; this isolated
+  the issue to the locked file, not a compiler error.
+- Backend startup migrations are skipped by the EF InMemory test provider;
+  relational databases apply the checked-in migrations before the API starts.
+- Docker CLI/Engine is not installed in the current environment, so Compose
+  startup, container isolation, and named-volume persistence could not be
+  executed or claimed as verified.

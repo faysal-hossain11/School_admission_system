@@ -6,15 +6,18 @@ included in this repository.
 
 ## Current status
 
-Stages 1-6 are complete: the backend includes PostgreSQL persistence, class
+Stages 1-7 are implemented: the backend includes PostgreSQL persistence, class
 management APIs, and the admission hold lifecycle, with automated lifecycle
 and concurrency tests. The React frontend supports class management and
-student application workflows.
+student application workflows. Docker Compose is configured to build and run
+the database, backend, and production frontend; end-to-end container
+verification remains pending in an environment with Docker installed.
 
 ## Repository layout
 
 ```text
 backend/
+  Dockerfile
   src/
     SchoolAdmission.Api/
       Contracts/
@@ -28,15 +31,16 @@ backend/
   tests/
     SchoolAdmission.Api.Tests/
 frontend/
+  Dockerfile
   src/
+docker-compose.yml
 ASSUMPTIONS.md
 AI_USAGE.md
 README.md
 ```
 
 The backend targets .NET 8 and uses Entity Framework Core with PostgreSQL. The
-frontend scaffold uses React 18, TypeScript, and Vite. Root-level Docker
-Compose, Dockerfiles, and runtime instructions will be added in a later stage.
+frontend uses React 18, TypeScript, and Vite.
 
 ## Planned development stages
 
@@ -46,9 +50,9 @@ Compose, Dockerfiles, and runtime instructions will be added in a later stage.
 4. Implement the hold lifecycle and remaining APIs.
 5. Add mandatory backend tests.
 6. Build the core React UI.
-7. Complete student workflows and live behavior.
+7. Containerize, compose, and finalize runtime documentation.
 8. Verify UI workflows and pursue the frontend-test bonus.
-9. Containerize and compose the application.
+9. Verify the optional multi-process bonus if pursued.
 10. Finalize documentation and submission checks.
 
 ## Class APIs
@@ -89,8 +93,10 @@ Set `ConnectionStrings__AdmissionDatabase` in the backend process environment
 to a PostgreSQL connection string. For example, use the connection details of
 your own local PostgreSQL instance; do not commit credentials.
 
-Restore the repository-local EF Core command-line tool and apply the checked-in
-migrations from the `backend/` directory:
+The API automatically applies checked-in migrations on startup when using a
+relational database. To apply migrations manually instead, restore the
+repository-local EF Core command-line tool and run this from the `backend/`
+directory:
 
 ```text
 dotnet tool restore
@@ -135,6 +141,43 @@ npm run build
 
 The student registration number is stored in this browser's local storage.
 Class seat summaries and student applications refresh every five seconds;
-hold countdowns update each second. Docker Compose run instructions will be
-documented as those capabilities are implemented.
+hold countdowns update each second.
+
+## Run the complete application with Docker Compose
+
+Install Docker Desktop (or Docker Engine with the Compose plugin), then run
+from the repository root:
+
+```text
+docker compose up --build
+```
+
+Make sure host ports 8080 (API) and 3000 (frontend) are available.
+Open the frontend at <http://localhost:3000>. The API listens on
+<http://localhost:8080>; the browser uses that URL directly. PostgreSQL is
+available to the API on the private Compose network and is not published to
+the host. The backend waits for PostgreSQL health and applies its checked-in
+EF Core migrations before serving requests.
+
+The Compose file supplies local-development defaults for the PostgreSQL
+database, user, and password. Override `POSTGRES_DB`, `POSTGRES_USER`, and
+`POSTGRES_PASSWORD` in the shell or a local `.env` file when different
+credentials are needed. Do not use the development defaults for production.
+`HOLD_DURATION_SECONDS` can also be overridden; it defaults to 600.
+
+Stop the containers with Ctrl+C or `docker compose down`. The named
+`postgres_data` volume is retained by `docker compose down`, so data remains
+available after a subsequent `docker compose up`. To intentionally remove the
+database and persisted data, use `docker compose down --volumes`.
+
+Run the backend tests with PostgreSQL available and configured as described
+above:
+
+```text
+dotnet test backend/SchoolAdmission.sln
+```
+
+There is no automated frontend test project yet. Build-check the frontend
+locally with `cd frontend`, `npm ci`, and `npm run build`, or build and start
+the production containers with `docker compose up --build`.
 # School_admission_system
