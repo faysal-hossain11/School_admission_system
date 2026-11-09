@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolAdmission.Api.Data;
+using SchoolAdmission.Api.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,15 @@ var connectionString = builder.Configuration.GetConnectionString("AdmissionDatab
 
 builder.Services.AddDbContext<AdmissionDbContext>(options =>
     options.UseNpgsql(connectionString));
+builder.Services.AddScoped<IAdmissionClassRepository, AdmissionClassRepository>();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
+app.MapControllers();
+
 app.Run();
+
+public partial class Program
+{
+}

@@ -6,9 +6,9 @@ included in this repository.
 
 ## Current status
 
-Stage 2 is complete: the backend contains the PostgreSQL persistence model and
-an initial EF Core migration. Admission APIs, application services, business
-logic, and UI features have not yet been implemented.
+Stage 3 is complete: the backend includes PostgreSQL persistence and the class
+creation and class-summary APIs. Hold lifecycle APIs, application services,
+student workflows, and UI features have not yet been implemented.
 
 ## Repository layout
 
@@ -16,10 +16,14 @@ logic, and UI features have not yet been implemented.
 backend/
   src/
     SchoolAdmission.Api/
+      Contracts/
+      Controllers/
       Data/
         Migrations/
       Models/
+      Repositories/
   tests/
+    SchoolAdmission.Api.Tests/
 frontend/
   src/
 ASSUMPTIONS.md
@@ -44,6 +48,20 @@ Compose, Dockerfiles, and runtime instructions will be added in a later stage.
 9. Containerize and compose the application.
 10. Finalize documentation and submission checks.
 
+## Class APIs
+
+The backend exposes these endpoints:
+
+- `POST /classes` creates a class and returns `201`.
+- `GET /classes` returns classes with held, confirmed, and available seat
+  summaries.
+- `GET /classes/{classId}` returns one class summary or `404` when it does not
+  exist.
+
+The class response fields are `id`, `name`, and `totalSeats`. Summary responses
+also include `heldSeats`, `confirmedSeats`, and `availableSeats`. Seat counts
+are calculated from persisted holds; no separate counters are stored.
+
 ## Backend database setup
 
 Set `ConnectionStrings__AdmissionDatabase` in the backend process environment
@@ -64,6 +82,12 @@ Build the backend from the repository root:
 dotnet build backend/SchoolAdmission.sln
 ```
 
+Run the backend tests from the repository root:
+
+```text
+dotnet test backend/SchoolAdmission.sln
+```
+
 ## Frontend scaffold
 
 The frontend scaffold can be built with Node.js installed:
@@ -74,7 +98,6 @@ npm install
 npm run build
 ```
 
-No application workflows or automated tests are implemented yet. Docker
-Compose run instructions and test commands will be documented as those
-capabilities are implemented.
+Hold workflows and frontend features are not implemented yet. Docker Compose
+run instructions will be documented as those capabilities are implemented.
 # School_admission_system
